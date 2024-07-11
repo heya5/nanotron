@@ -38,7 +38,7 @@ model_config = LlamaConfig(
     rope_scaling=None,
     tie_word_embeddings=True,
     use_cache=True,
-    vocab_size=256,
+    vocab_size=128000,
 )
 
 num_params = human_format(
@@ -81,7 +81,7 @@ parallelism = ParallelismArgs(
     tp_linear_async_communication=True,
 )
 
-tokens = TokensArgs(sequence_length=2048, train_steps=15, micro_batch_size=2, batch_accumulation_per_replica=1)
+tokens = TokensArgs(sequence_length=2048, train_steps=556181, micro_batch_size=8, batch_accumulation_per_replica=1)
 
 data_stages = [
     # DatasetStageArgs(
@@ -102,15 +102,15 @@ data_stages = [
     ),
 ]
 
-checkpoints_path = "./checkpoints"
+checkpoints_path = "./ckpt_tiny_finewebedu"
 os.makedirs(checkpoints_path, exist_ok=True)
 
 config = Config(
     general=GeneralArgs(project="debug", run="tiny_llama_%date_%jobid", seed=seed),
-    checkpoints=CheckpointsArgs(checkpoints_path=checkpoints_path, checkpoint_interval=10),
+    checkpoints=CheckpointsArgs(checkpoints_path=checkpoints_path, checkpoint_interval=50000),
     parallelism=parallelism,
     model=ModelArgs(init_method=RandomInit(std=0.025), model_config=model_config),
-    tokenizer=TokenizerArgs("robot-test/dummy-tokenizer-wordlevel"),
+    tokenizer=TokenizerArgs("Xenova/llama-3-tokenizer"),
     optimizer=optimizer,
     logging=LoggingArgs(),
     tokens=tokens,
